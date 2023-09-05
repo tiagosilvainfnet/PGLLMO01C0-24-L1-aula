@@ -1,7 +1,7 @@
 # Instale o create-react-app rodando 
 
 ```bash
-npm isntall create-react-app --global
+npm install create-react-app --global
 ```
 
 Dentro de uma pasta rode 
