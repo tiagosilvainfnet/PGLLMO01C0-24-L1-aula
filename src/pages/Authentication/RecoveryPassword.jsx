@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { verifyLogin } from "../../utils/auth";
+import { AuthTopComponent } from "../../components";
 
 const RecoveryPassword = ({ setCurrentPath, loggoutRoutes }) => {
     const navigate = useNavigate();
@@ -10,7 +11,9 @@ const RecoveryPassword = ({ setCurrentPath, loggoutRoutes }) => {
         verifyLogin(loggoutRoutes, window.location.pathname, navigate)
     }, [])
 
-    return 'RecoveryPassword'
-}
+    return <>
+            <AuthTopComponent title_page={'Esqueceu a senha'} subtitle_page={'Insira seu e-mail para recuperar a senha...'}/>
+           </>
+} 
 
 export default RecoveryPassword;

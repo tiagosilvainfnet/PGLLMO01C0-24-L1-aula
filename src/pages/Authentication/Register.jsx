@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { verifyLogin } from "../../utils/auth";
+import { AuthTopComponent } from "../../components";
 
 const Register = ({ setCurrentPath, loggoutRoutes }) => {
     const navigate = useNavigate();
@@ -10,7 +11,9 @@ const Register = ({ setCurrentPath, loggoutRoutes }) => {
         verifyLogin(loggoutRoutes, window.location.pathname, navigate)
     }, [])
 
-    return 'Register'
+    return <>
+            <AuthTopComponent title_page={'Cadastre-se'} subtitle_page={'Insira seus dados para e cadastrar...'}/>
+           </>
 }
 
 export default Register;

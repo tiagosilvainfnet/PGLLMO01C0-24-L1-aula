@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { logout, verifyLogin } from "../../utils/auth";
-import { ButtonComponent } from "../../components";
+import { ButtonComponent, TopComponent } from "../../components";
 
 const Settings = ({ setCurrentPath, loggoutRoutes }) => {
     const navigate = useNavigate();
@@ -12,9 +12,9 @@ const Settings = ({ setCurrentPath, loggoutRoutes }) => {
     }, [])
 
     return <>
-        Settings
+        <TopComponent hasMenu={true} hasImage={true} title={`Configurações`} subtitle={'Configurações do app...'}/>
         <ButtonComponent label="Sair" onClick={() => logout(navigate)}/>
-    </>;
+    </>
 }
 
 export default Settings;
