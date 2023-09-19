@@ -2,12 +2,13 @@ import { TextField } from '@mui/material';
 
 const TextFieldComponent = ({ style, label, variant, type, ...rest }) => { 
     return <TextField 
+                placeholder={variant === 'filled' ? label : null} 
+                label={variant !== 'filled' ? label : null} 
                 style={{
-                    width: rest.fullWidth ? 'calc(100% - 16px)' : 'auto',
-                    ...style
+                    ...style,
                 }}
+                className={variant === 'filled' ? "inputRounded" : null}
                 {...rest} 
-                label={label} 
                 variant={variant} 
                 type={type}/>
 }

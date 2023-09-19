@@ -6,7 +6,7 @@ import LoginIcon from '@mui/icons-material/Login';
 import { InputAdornment } from "@mui/material";
 import { AccountCircleOutlined, LockOutlined } from "@material-ui/icons";
 
-const Login = ({ setCurrentPath, loggoutRoutes, firebaseApp }) => {
+const Register = ({ setCurrentPath, loggoutRoutes, firebaseApp }) => {
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -18,7 +18,7 @@ const Login = ({ setCurrentPath, loggoutRoutes, firebaseApp }) => {
     const [password, setPassword] = useState("");
 
     async function cadastrarNoApp(){
-        await register(firebaseApp, {email, password})
+        await register(firebaseApp, {email, password}, navigate)
     }
 
     return <>
@@ -33,7 +33,9 @@ const Login = ({ setCurrentPath, loggoutRoutes, firebaseApp }) => {
                     InputProps={{
                         startAdornment: (
                         <InputAdornment position="start">
-                            <AccountCircleOutlined />
+                            <AccountCircleOutlined style={{
+                                color: "#333"
+                            }}/>
                         </InputAdornment>
                         ),
                     }}
@@ -49,7 +51,9 @@ const Login = ({ setCurrentPath, loggoutRoutes, firebaseApp }) => {
                     InputProps={{
                         startAdornment: (
                           <InputAdornment position="start">
-                            <LockOutlined />
+                            <LockOutlined style={{
+                                color: "#333"
+                            }}/>
                           </InputAdornment>
                         ),
                       }}
@@ -77,4 +81,4 @@ const Login = ({ setCurrentPath, loggoutRoutes, firebaseApp }) => {
     </>
 }
 
-export default Login;
+export default Register;

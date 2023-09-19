@@ -32,6 +32,35 @@ button{
   padding: 10px !important;
 }
 
+.inputRounded{
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.inputRounded input{
+  padding-top: 16.5px;
+  padding-bottom: 16.5px;
+}
+
+.inputRounded .MuiInputAdornment-root{
+  margin-top: 0px !important;
+}
+.inputRounded .MuiInputBase-root:before, 
+.inputRounded .MuiInputBase-root:after,  
+.inputRounded .Mui-Focused:hover:not(.Mui-disabled, .Mui-error):before,
+.inputRounded .MuiInputBase-root:hover:not(.Mui-disabled, .Mui-error):before{
+  border-bottom: none;
+}
+
+.inputRounded input:-internal-autofill-selected{
+  background-color: transparent !important;
+}
+
+.inputRounded input::placeholder {
+  color: #333;
+  opacity: 1;
+}
+
 .App {
   text-align: center;
 }

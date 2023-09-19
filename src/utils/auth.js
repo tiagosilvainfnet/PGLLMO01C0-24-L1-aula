@@ -1,4 +1,4 @@
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, signOut } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail } from "firebase/auth";
 
 const userIsLoggedIn = () => {
     const user = window.localStorage.getItem('user');
@@ -13,6 +13,21 @@ const verifyLogin = (loggoutRoutes, currentPath, navigate) => {
         navigate('/')
     }else if(!isLoggedIn && !loggoutRoutes.includes(currentPath)){
         navigate('/login')
+    }
+}
+
+const sendPasswordReset = async (firebaseApp, email, navigate) => {
+    try{
+        const auth = getAuth(firebaseApp);
+        await sendPasswordResetEmail(auth, email);
+        alert("Link de recuperação enviado com sucesso!");
+        navigate('/login');
+    }catch(e){
+        if(e.toString().indexOf('auth/invalid-email') > -1){
+            alert('Dados de usuário inválidos.')
+        }else{
+            alert(e.toString())
+        }
     }
 }
 
@@ -59,12 +74,13 @@ const resendEmail = async (firebaseApp, data, setShowResendEmail) => {
     }
 }
 
-const register = async (firebaseApp, data) => {
+const register = async (firebaseApp, data, navigate) => {
     try{
         const auth = getAuth(firebaseApp);
         const response = await createUserWithEmailAndPassword(auth, data.email, data.password)
         await confirmAccount(response.user);
         alert("Usuário cadatrado com sucesso. Verifique sua caixa de mensagem.")
+        navigate('/login');
     }catch(e){
         if(e.toString().indexOf('auth/invalid-email') > -1){
             alert('E-mail inválido.')
@@ -88,5 +104,6 @@ export {
     login,
     logout,
     resendEmail,
-    register
+    register,
+    sendPasswordReset
 }

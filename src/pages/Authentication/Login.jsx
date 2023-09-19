@@ -39,7 +39,9 @@ const Login = ({ setCurrentPath, loggoutRoutes, firebaseApp }) => {
                     InputProps={{
                         startAdornment: (
                         <InputAdornment position="start">
-                            <AccountCircleOutlined />
+                            <AccountCircleOutlined style={{
+                                color: "#333"
+                            }}/>
                         </InputAdornment>
                         ),
                     }}
@@ -47,7 +49,7 @@ const Login = ({ setCurrentPath, loggoutRoutes, firebaseApp }) => {
             </BoxComponent>
             <BoxComponent
                 component="div"
-                sx={{ mt: 3, mb:3, pl: 4, pr: 4 }}
+                sx={{ mt: 3, mb:1, pl: 4, pr: 4 }}
                 noValidate={true}
                 autoComplete={"off"}
             >
@@ -55,7 +57,9 @@ const Login = ({ setCurrentPath, loggoutRoutes, firebaseApp }) => {
                     InputProps={{
                         startAdornment: (
                           <InputAdornment position="start">
-                            <LockOutlined />
+                            <LockOutlined style={{
+                                color: "#333"
+                            }}/>
                           </InputAdornment>
                         ),
                       }}
@@ -63,7 +67,22 @@ const Login = ({ setCurrentPath, loggoutRoutes, firebaseApp }) => {
             </BoxComponent> 
             <BoxComponent
                 component="div"
-                sx={{ mt: 3, mb:3, pl: 4, pr: 4 }}
+                sx={{ mt: 0, mb:0, pl: 4, pr: 4 }}
+                noValidate={true}
+                autoComplete={"off"}
+            >
+                <StackComponent sx={{mt: 0, mb: 0}} alignItems={'end'}>
+                    <Link style={{
+                        color: '#333',
+                        textDecoration: 'none',
+                        fontWeight: '200 !important',
+                        fontSize: 16
+                    }} to="/recovery-password">Esqueceu a senha?</Link>
+                </StackComponent>
+            </BoxComponent>
+            <BoxComponent
+                component="div"
+                sx={{ mt: 1, mb:3, pl: 4, pr: 4 }}
                 noValidate={true}
                 autoComplete={"off"}
             > 
