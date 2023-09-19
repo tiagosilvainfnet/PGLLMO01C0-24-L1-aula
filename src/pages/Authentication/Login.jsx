@@ -1,13 +1,14 @@
 import { ButtonComponent, TextFieldComponent, BoxComponent, AuthTopComponent, StackComponent } from "../../components"
 import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom";
-import { login, verifyLogin } from "../../utils/auth";
+import { login, resendEmail, verifyLogin } from "../../utils/auth";
 import LoginIcon from '@mui/icons-material/Login';
 import { InputAdornment } from "@mui/material";
 import { AccountCircleOutlined, LockOutlined } from "@material-ui/icons";
 
-const Login = ({ setCurrentPath, loggoutRoutes }) => {
+const Login = ({ setCurrentPath, loggoutRoutes, firebaseApp }) => {
     const navigate = useNavigate();
+    const [showResendEmail, setShowResendEmail] = useState(false);
 
     useEffect(() => {
         setCurrentPath(window.location.pathname)
@@ -15,13 +16,15 @@ const Login = ({ setCurrentPath, loggoutRoutes }) => {
     }, [])
 
     const [email, setEmail] = useState("tiago");
-    const [senha, setSenha] = useState("");
+    const [password, setPassword] = useState("");
 
-    function entrarNoApp(){
-        console.log(email)
-        console.log(senha)
+    async function entrarNoApp(){
+        await login(firebaseApp, {email, password}, navigate, setShowResendEmail)
+    }
 
-        login({email, senha}, navigate)
+
+    async function _resendEmail(){
+        await resendEmail(firebaseApp, {email, password}, setShowResendEmail);
     }
 
     return <>
@@ -56,7 +59,7 @@ const Login = ({ setCurrentPath, loggoutRoutes }) => {
                           </InputAdornment>
                         ),
                       }}
-                    variant="filled" fullWidth={true} label="Password" value={senha} type="password" onChange={(e) => setSenha(e.target.value)}/>
+                    variant="filled" fullWidth={true} label="Password" value={password} type="password" onChange={(e) => setPassword(e.target.value)}/>
             </BoxComponent> 
             <BoxComponent
                 component="div"
@@ -68,7 +71,21 @@ const Login = ({ setCurrentPath, loggoutRoutes }) => {
                     startIcon={<LoginIcon sx={{color: '#fff'}}/>}
                     fullWidth={true} 
                     label="Entrar" onClick={entrarNoApp}/>
-            </BoxComponent> 
+            </BoxComponent>
+            { showResendEmail ?
+                <BoxComponent
+                    component="div"
+                    sx={{ mt: 3, mb:3, pl: 4, pr: 4 }}
+                    noValidate={true}
+                    autoComplete={"off"}
+                > 
+                    <ButtonComponent
+                        startIcon={<LoginIcon sx={{color: '#fff'}}/>}
+                        fullWidth={true} 
+                        label="Reenviar e-mail" onClick={_resendEmail}/>
+                </BoxComponent> 
+            : null} 
+            
             <StackComponent sx={{mt: 4, mb: 4}} alignItems={'center'}>
                 <Link style={{
                     color: '#333',
