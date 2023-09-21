@@ -1,7 +1,7 @@
 import './App.css';
 import { Suspense, useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { Loading } from './components';
+import { Loading, Menu } from './components';
 import routes from './routes';
 
 import { initializeApp } from "firebase/app";
@@ -17,7 +17,8 @@ const firebaseConfig = {
   storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
   messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
   appId: process.env.REACT_APP_APP_ID,
-  measurementId: process.env.REACT_APP_MEASUREMENT_ID
+  measurementId: process.env.REACT_APP_MEASUREMENT_ID,
+  databaseURL: process.env.REACT_APP_DATABASE_URL
 };
 
 function App() {
@@ -38,12 +39,7 @@ function App() {
     </Suspense>
     <br></br>
     { !routesWithoutMenu.includes(currentPath) ? 
-      routes.map((route, idx) => {
-        if(route.tab){
-          return <Link key={`${idx}_menu`} to={route.path}>{route.title}</Link>
-        }
-        return null;
-      }) : null
+      <Menu routes={routes} currentPath={currentPath}/> : null
     }
   </Router>;
 }

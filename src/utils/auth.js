@@ -1,14 +1,18 @@
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail } from "firebase/auth";
+import { DataModel } from "../data/datamodel";
 
-const userIsLoggedIn = () => {
-    const user = window.localStorage.getItem('user');
-    if(user) return JSON.parse(user);
+const userIsLoggedIn = async (firebaseApp) => {
+    const dataModel = new DataModel('user', firebaseApp);
+    const user = await dataModel.getLocal();
+    if(user.length > 0){
+        return user[0]
+    }
     return null;
 }
 
-const verifyLogin = (loggoutRoutes, currentPath, navigate) => {
-    const isLoggedIn = userIsLoggedIn();
-
+const verifyLogin = async (loggoutRoutes, currentPath, navigate, firebaseApp) => {
+    const isLoggedIn = await userIsLoggedIn(firebaseApp);
+    
     if(isLoggedIn && loggoutRoutes.includes(currentPath)){
         navigate('/')
     }else if(!isLoggedIn && !loggoutRoutes.includes(currentPath)){
@@ -31,8 +35,9 @@ const sendPasswordReset = async (firebaseApp, email, navigate) => {
     }
 }
 
-const saveLogin = (data) => {
-    window.localStorage.setItem('user', JSON.stringify(data));
+const saveLogin = (firebaseApp, data) => {
+    const dataModel = new DataModel('user', firebaseApp);
+    dataModel.createLocal(data, data.uid)
 }
 
 const login = async (firebaseApp, data, navigate, setShowResendEmail) => {
@@ -42,7 +47,9 @@ const login = async (firebaseApp, data, navigate, setShowResendEmail) => {
         const {email, displayName, emailVerified, photoURL, uid, accessToken} = response.user;
 
         if(emailVerified){
-            saveLogin({email, displayName, photoURL, uid, accessToken});
+            saveLogin(firebaseApp, {email, displayName, photoURL, uid, accessToken});
+            updateUserStatus(firebaseApp, uid)
+
             navigate('/');
             setShowResendEmail(false)
         }else{
@@ -79,6 +86,10 @@ const register = async (firebaseApp, data, navigate) => {
         const auth = getAuth(firebaseApp);
         const response = await createUserWithEmailAndPassword(auth, data.email, data.password)
         await confirmAccount(response.user);
+
+        
+        const {email, displayName, emailVerified, photoURL, uid} = response.user;
+        await saveUserInDatabase(firebaseApp, {email, displayName, emailVerified, photoURL, uid});
         alert("Usuário cadatrado com sucesso. Verifique sua caixa de mensagem.")
         navigate('/login');
     }catch(e){
@@ -95,8 +106,20 @@ const register = async (firebaseApp, data, navigate) => {
 }
 
 const logout = async (firebaseApp, navigate) => {
-    window.localStorage.clear();
+    const dataModel = new DataModel(null, firebaseApp);
+    dataModel.clearDatabase(['user', 'task', 'category']);
+
     navigate('/login');
+}
+
+const saveUserInDatabase = async (firebaseApp, user) => {
+    const dataModel = new DataModel('user', firebaseApp);
+    dataModel.create(user)
+}
+
+const updateUserStatus = async(firebaseApp, id) => {
+    const dataModel = new DataModel('user', firebaseApp);
+    dataModel.update({'emailVerified': true}, id);
 }
 
 export {

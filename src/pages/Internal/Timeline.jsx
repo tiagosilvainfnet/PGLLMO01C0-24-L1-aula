@@ -3,12 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { verifyLogin } from "../../utils/auth";
 import { TopComponent } from "../../components";
 
-const Timeline = ({ setCurrentPath, loggoutRoutes }) => {
+const Timeline = ({ setCurrentPath, loggoutRoutes, firebaseApp }) => {
     const navigate = useNavigate();
 
     useEffect(() => {
         setCurrentPath(window.location.pathname)
-        verifyLogin(loggoutRoutes, window.location.pathname, navigate)
+        verifyLogin(loggoutRoutes, window.location.pathname, navigate, firebaseApp)
     }, [])
      
     return <>

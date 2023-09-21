@@ -7,7 +7,7 @@ const NotFound = ({ setCurrentPath, loggoutRoutes }) => {
 
     useEffect(() => {
         setCurrentPath(window.location.pathname)
-        verifyLogin(loggoutRoutes, window.location.pathname, navigate)
+        verifyLogin(loggoutRoutes, window.location.pathname, navigate, firebaseApp)
     }, [])
 
     return 'Página não encontrada'

@@ -11,7 +11,7 @@ const Register = ({ setCurrentPath, loggoutRoutes, firebaseApp }) => {
 
     useEffect(() => {
         setCurrentPath(window.location.pathname)
-        verifyLogin(loggoutRoutes, window.location.pathname, navigate)
+        verifyLogin(loggoutRoutes, window.location.pathname, navigate, firebaseApp)
     }, [])
 
     const [email, setEmail] = useState("tiago");

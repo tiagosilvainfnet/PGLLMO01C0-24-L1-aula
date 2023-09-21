@@ -3,13 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { verifyLogin } from '../../utils/auth';
 import { TopComponent } from '../../components';
 
-const Home = ({ setCurrentPath, loggoutRoutes }) => {
+const Home = ({ setCurrentPath, loggoutRoutes, firebaseApp }) => {
     const navigate = useNavigate();
     const [username, setUsername] = useState("Tiago")
 
     useEffect(() => {
         setCurrentPath(window.location.pathname)
-        verifyLogin(loggoutRoutes, window.location.pathname, navigate)
+        verifyLogin(loggoutRoutes, window.location.pathname, navigate, firebaseApp)
     }, [])
 
     return <>
