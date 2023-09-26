@@ -1,4 +1,4 @@
-import { getDatabase, ref, set, update, child, get } from "firebase/database";
+import { getDatabase, ref, onValue, set, update, child, get } from "firebase/database";
 import { db } from "./database";
 
 export class DataModel{
@@ -8,15 +8,16 @@ export class DataModel{
         this.realtimeDb = getDatabase(firebaseApp)
     }
 
-    async get(id){
-        const dbRef = ref(this.realtimeDb);
-        const snapshot = await child(dbRef, `${this.model}/${id}`).get();
-
-        if (snapshot.exists()) {
-            return snapshot.val()
-        } else {
-            return null;
-        }
+    async get(id, updates){
+        const db = getDatabase();
+        const _ref = ref(db, `${this.model}/` + id);
+        
+        onValue(_ref, (snapshot) => {
+            const data = snapshot.val();
+            for(const key of Object.keys(updates)){
+                updates[key](data[key]);
+            }
+        });
     }
 
     async list(){

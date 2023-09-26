@@ -1,5 +1,13 @@
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail } from "firebase/auth";
+import { 
+    getAuth, 
+    createUserWithEmailAndPassword, 
+    signInWithEmailAndPassword, 
+    sendEmailVerification, 
+    sendPasswordResetEmail,
+    updateProfile
+} from "firebase/auth";
 import { DataModel } from "../data/datamodel";
+import { saveImageB64 } from "./storage";
 
 const userIsLoggedIn = async (firebaseApp) => {
     const dataModel = new DataModel('user', firebaseApp);
@@ -17,6 +25,40 @@ const verifyLogin = async (loggoutRoutes, currentPath, navigate, firebaseApp) =>
         navigate('/')
     }else if(!isLoggedIn && !loggoutRoutes.includes(currentPath)){
         navigate('/login')
+    }
+}
+
+const loadUser = async (firebaseApp, setPhotoURL, setDisplayName, setBirthday, setRole) => {
+    const user = getAuth(firebaseApp).currentUser;
+    if(user){
+        setPhotoURL(user.photoURL);
+        setDisplayName(user.displayName);
+
+        const dataModel = new DataModel('user', firebaseApp);
+        await dataModel.get(user.uid, {
+            'role': setRole,
+            'birthday': setBirthday
+        });
+    }
+}
+
+const convertB64ParaUrl = async (firebaseApp, file, uid) => {
+    if(file.indexOf('data:image') > -1){
+        return await saveImageB64(firebaseApp, file, uid);
+    }else{
+        return file;
+    }
+}
+
+
+const _updateProfile = async (firebaseApp, data) => {
+    const user = getAuth(firebaseApp).currentUser;
+    if(user){
+        data.photoURL = await convertB64ParaUrl(firebaseApp, data.photoURL, user.uid);
+        await updateProfile(user, data);
+        const dataModel = new DataModel('user', firebaseApp);
+        dataModel.update(data, user.uid);
+        console.log('Atualizado')
     }
 }
 
@@ -43,7 +85,7 @@ const saveLogin = (firebaseApp, data) => {
 const login = async (firebaseApp, data, navigate, setShowResendEmail) => {
     try{
         const auth = getAuth(firebaseApp);
-        const response = await signInWithEmailAndPassword(auth, data.email, data.password)
+        const response = await signInWithEmailAndPassword(auth, data.email, data.password);
         const {email, displayName, emailVerified, photoURL, uid, accessToken} = response.user;
 
         if(emailVerified){
@@ -128,5 +170,7 @@ export {
     logout,
     resendEmail,
     register,
-    sendPasswordReset
+    sendPasswordReset,
+    _updateProfile,
+    loadUser
 }
