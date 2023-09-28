@@ -6,6 +6,7 @@ import routes from './routes';
 
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+import { sync } from './utils/sync';
 
 const routesWithoutMenu = ['/task', '/login', '/register', '/recovery-password'];
 const loggoutRoutes = ['/login', '/register', '/recovery-password']
@@ -26,6 +27,16 @@ function App() {
   
   const firebaseApp = initializeApp(firebaseConfig);
   const analytics = getAnalytics(firebaseApp);
+
+  useEffect(() => {
+    setInterval(() => {
+      sync(firebaseApp);
+    }, 1000 * 60 * 5)
+  }, [])
+
+  useEffect(() => {
+    sync(firebaseApp);
+  }, [currentPath])
 
   return <Router>
     <Suspense fallback={<Loading/>}>

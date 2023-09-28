@@ -29,17 +29,12 @@ const verifyLogin = async (loggoutRoutes, currentPath, navigate, firebaseApp) =>
 }
 
 const loadUser = async (firebaseApp, setPhotoURL, setDisplayName, setBirthday, setRole) => {
-    const user = getAuth(firebaseApp).currentUser;
-    if(user){
-        setPhotoURL(user.photoURL);
-        setDisplayName(user.displayName);
-
-        const dataModel = new DataModel('user', firebaseApp);
-        await dataModel.get(user.uid, {
-            'role': setRole,
-            'birthday': setBirthday
-        });
-    }
+    const dataModel = new DataModel('user', firebaseApp);
+    const _user = await dataModel.get();
+    setPhotoURL(_user[0].photoURL);
+    setDisplayName(_user[0].displayName);
+    setBirthday(_user[0].birthday);
+    setRole(_user[0].role);
 }
 
 const convertB64ParaUrl = async (firebaseApp, file, uid) => {
@@ -52,14 +47,21 @@ const convertB64ParaUrl = async (firebaseApp, file, uid) => {
 
 
 const _updateProfile = async (firebaseApp, data) => {
-    const user = getAuth(firebaseApp).currentUser;
-    if(user){
+    const user = await getUserLocal();
+    data.uid = user.uid;
+    data.photoURLLocal = data.photoURL
+
+    if(navigator.onLine){
         data.photoURL = await convertB64ParaUrl(firebaseApp, data.photoURL, user.uid);
-        await updateProfile(user, data);
-        const dataModel = new DataModel('user', firebaseApp);
-        dataModel.update(data, user.uid);
-        console.log('Atualizado')
+        const _user = getAuth(firebaseApp).currentUser;
+        if(_user){
+            await updateProfile(_user, data);
+        }
+    }else{
+        data.synced = false;
     }
+    const dataModel = new DataModel('user', firebaseApp);
+    dataModel.update(data, user.uid, ['photoURLLocal']);
 }
 
 const sendPasswordReset = async (firebaseApp, email, navigate) => {
@@ -164,7 +166,14 @@ const updateUserStatus = async(firebaseApp, id) => {
     dataModel.update({'emailVerified': true}, id);
 }
 
+const getUserLocal = async () => {
+    const dataModel = new DataModel('user');
+    const user = await dataModel.getLocal();
+    return user[0];
+}
+
 export {
+    getUserLocal,
     verifyLogin,
     login,
     logout,
